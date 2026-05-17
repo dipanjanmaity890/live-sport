@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//YourApp//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:clean-architecture-online-4-2023
+DTSTAMP:20260517T130731Z
+DTSTART;VALUE=DATE:20260528
+DTEND;VALUE=DATE:20260530
+SUMMARY:Clean Architecture Masterclass
+DESCRIPTION:Clean Architecture Masterclass is happening on May 28\, 2026\, Online. More information: https://dev.events/conferences/clean-architecture-online-4-2023
+LOCATION:Online
+URL:https://dev.events/conferences/clean-architecture-online-4-2023
+END:VEVENT
+END:VCALENDAR
