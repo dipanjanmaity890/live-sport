@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FanPulse Live Match</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.4rem, 1.1rem + 1vw, 2rem);
+      --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem; --space-5: 1.25rem;
+      --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
+      --radius-sm: 0.5rem; --radius-md: 0.9rem; --radius-lg: 1.2rem; --radius-xl: 1.6rem; --radius-full: 999px;
+      --bg: #0c111d; --surface: #131b2d; --surface-2:#182338; --surface-3:#1f2d47; --border: rgba(255,255,255,.09);
+      --text: #eff4ff; --muted:#9fb0d0; --faint:#6980ac; --primary:#4cc9f0; --success:#73d87f; --warn:#ffb347; --danger:#ff5d73; --purple:#9d7bff;
+      --shadow: 0 20px 60px rgba(0,0,0,.32);
+      --goal-a: #19d37e; --card-a: #ff7a59; --save-a:#57b7ff; --sub-a:#9b7dff; --ft-a:#f2c14e;
+      --event-grad: linear-gradient(135deg, rgba(76,201,240,.20), rgba(157,123,255,.16));
+      --teamA:#5ec8ff; --teamB:#ff7b89;
+    }
+    *{box-sizing:border-box} html,body{margin:0;padding:0;background:radial-gradient(circle at top, #17223b 0%, #0c111d 48%, #09101a 100%);color:var(--text);font-family:Inter,sans-serif;min-height:100%}
+    body{display:flex;justify-content:center;padding:var(--space-5);overflow-x:hidden}
+    .app{width:min(1520px,100%);display:grid;grid-template-columns:290px 1fr 360px;gap:var(--space-5)}
+    .panel,.phone,.right{background:rgba(19,27,45,.78);border:1px solid var(--border);backdrop-filter: blur(16px);border-radius:var(--radius-xl);box-shadow:var(--shadow)}
+    .panel{padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-5)}
+    .brand{display:flex;align-items:center;gap:var(--space-3)}
+    .logo{width:46px;height:46px;border-radius:14px;background:conic-gradient(from 220deg, var(--primary), var(--purple), var(--danger), var(--primary));position:relative;box-shadow:0 0 0 4px rgba(255,255,255,.04);animation:logoSpin 10s linear infinite}
+    .logo:before,.logo:after{content:"";position:absolute;background:#09101a;border-radius:999px}.logo:before{width:20px;height:20px;left:13px;top:6px}.logo:after{width:26px;height:10px;left:10px;bottom:8px}
+    h1,h2,h3,h4,p{margin:0}.eyebrow{font-size:var(--text-xs);color:var(--primary);text-transform:uppercase;letter-spacing:.16em;font-weight:700}
+    .brand h1{font-family:Oswald,sans-serif;letter-spacing:.04em;font-size:1.7rem}.subtitle{color:var(--muted);font-size:var(--text-sm);margin-top:.2rem}
+    .challenge{padding:var(--space-4);border-radius:var(--radius-lg);background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.07)}
+    .challenge p{color:var(--muted);font-size:var(--text-sm);line-height:1.6}
+    .side-metrics{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
+    .mini{padding:var(--space-4);border-radius:var(--radius-lg);background:var(--surface-2);border:1px solid var(--border);transform:translateY(0);transition:.25s ease}.mini:hover{transform:translateY(-3px)}
+    .mini strong{display:block;font-size:1.4rem;margin-top:.35rem}
+    .sim-btn,.ghost-btn,.chip,.tab,.reaction,.vote-btn,.predict-btn,.tiny-btn,.chat-send,.player-btn,.pref-btn{transition:.22s ease;cursor:pointer}
+    .sim-btn{border:none;padding:1rem 1.1rem;border-radius:1rem;background:linear-gradient(90deg,var(--primary),#7f8cff);color:#04111f;font-weight:800;font-size:var(--text-sm);box-shadow:0 14px 30px rgba(76,201,240,.25)}
+    .sim-btn:hover{transform:translateY(-2px);filter:brightness(1.05)} .ghost-btn{padding:.9rem 1rem;border-radius:1rem;border:1px solid var(--border);background:transparent;color:var(--text);font-weight:700}
+    .legend{display:grid;gap:var(--space-2)} .legend div{display:flex;align-items:center;gap:.55rem;color:var(--muted);font-size:var(--text-sm)} .dot{width:10px;height:10px;border-radius:999px}
+    .phone{display:flex;flex-direction:column;overflow:hidden;min-height:980px;position:relative}.topbar{padding:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--border);background:linear-gradient(180deg, rgba(255,255,255,.05), transparent)}
+    .scoreboard{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3)} .team{display:flex;align-items:center;gap:var(--space-3);min-width:0}
+    .crest{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-weight:800}.crest.a{background:rgba(94,200,255,.14);color:var(--teamA)}.crest.b{background:rgba(255,123,137,.14);color:var(--teamB)}
+    .team-name{font-weight:800}.score{font-family:Oswald,sans-serif;font-size:3.3rem;line-height:1;letter-spacing:.06em}.clock{padding:.4rem .8rem;border-radius:999px;background:rgba(255,255,255,.06);font-weight:700;color:var(--muted);font-size:var(--text-sm)}
+    .live-clock{display:flex;align-items:flex-end;justify-content:center;gap:.5rem;margin-top:.35rem;font-variant-numeric:tabular-nums}.live-clock .date{font-size:var(--text-xs);color:var(--muted);text-transform:uppercase;letter-spacing:.14em}.live-clock .time{font-family:Oswald,sans-serif;font-size:1.05rem;letter-spacing:.08em}
+    .meta-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);margin-top:var(--space-4)}
+    .momentum{padding:0 var(--space-5) var(--space-4)} .momentum-bar{height:16px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;display:flex;border:1px solid rgba(255,255,255,.05)}
+    .momentum-a,.momentum-b{height:100%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;transition:width .5s cubic-bezier(.16,1,.3,1), box-shadow .25s ease}.momentum-a{background:linear-gradient(90deg,var(--teamA),#75e0ff);color:#08111a}.momentum-b{background:linear-gradient(90deg,#ff9a7d,var(--teamB));color:#20090c}
+    .content{padding:var(--space-4) var(--space-5) 5.5rem;display:flex;flex-direction:column;gap:var(--space-4)}
+    .moment-card,.module{border-radius:1.4rem;padding:var(--space-5);position:relative;overflow:hidden;background:var(--event-grad);border:1px solid rgba(255,255,255,.08);transform-origin:center}
+    .module{background:var(--surface-2);padding:var(--space-4)} .module-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:var(--space-3)}
+    .moment-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at top right, rgba(255,255,255,.12), transparent 35%);pointer-events:none}
+    .moment-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.45rem .8rem;border-radius:999px;font-size:var(--text-xs);font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.1)}
+    .moment-title{font-size:var(--text-xl);font-weight:900;margin-top:var(--space-3);max-width:18ch}.moment-copy{margin-top:.55rem;color:#e1eafe;line-height:1.7;font-size:var(--text-sm)}
+    .ai-analyst{margin-top:var(--space-4);padding:var(--space-4);border-radius:1rem;background:rgba(0,0,0,.16);border:1px solid rgba(255,255,255,.07)} .ai-analyst p{font-size:var(--text-sm);color:#d9e5ff}
+    .action-zone{display:grid;gap:var(--space-3);margin-top:var(--space-4)} .chips,.reactions,.vote-grid,.analyst-actions,.player-list,.badge-list,.pref-row{display:flex;gap:.75rem;flex-wrap:wrap}
+    .chip,.reaction,.vote-btn,.predict-btn,.tiny-btn,.player-btn,.pref-btn{border:none;background:rgba(255,255,255,.08);color:var(--text);padding:.85rem 1rem;border-radius:999px;font-weight:700}
+    .reaction:hover,.chip:hover,.vote-btn:hover,.predict-btn:hover,.tiny-btn:hover,.player-btn:hover,.pref-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.14)}
+    .predict-btn.primary,.tiny-btn.active,.pref-btn.active{background:rgba(255,255,255,.96);color:#06111f}
+    .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-3)} .stat-card,.feed-item,.rank-item,.log-item,.mini-game,.chat-box,.player-card{padding:var(--space-4);border-radius:1.1rem;background:var(--surface-2);border:1px solid var(--border);animation:floatIn .45s cubic-bezier(.16,1,.3,1)}
+    .tab-panels{display:none}.tab-panels.active{display:block}
+    .stat-label{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.12em;color:var(--muted)} .bar-wrap{margin-top:.8rem}.bar-line{height:12px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;display:flex}
+    .bar-a,.bar-b{height:100%;transition:width .6s cubic-bezier(.16,1,.3,1)}.bar-a{background:linear-gradient(90deg,var(--teamA),#91ecff)}.bar-b{background:linear-gradient(90deg,#ffb190,var(--teamB))}
+    .bar-values{display:flex;justify-content:space-between;color:var(--muted);font-size:var(--text-xs);margin-top:.45rem}
+    .feed-list,.rank-list,.notif-list,.chat-list{display:grid;gap:var(--space-3)} .feed-head,.rank-head{display:flex;justify-content:space-between;gap:var(--space-3);align-items:center}.tag{font-size:var(--text-xs);padding:.35rem .6rem;border-radius:999px;background:rgba(255,255,255,.08);color:var(--muted)}
+    .rank-item.top{background:linear-gradient(180deg, rgba(255,193,77,.16), rgba(255,255,255,.04));border-color:rgba(255,193,77,.22)} .points{font-weight:900}
+    .tabbar{position:absolute;left:0;right:0;bottom:0;padding:var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;background:linear-gradient(180deg, rgba(12,17,29,0), rgba(12,17,29,.9) 22%, rgba(12,17,29,.98) 100%)}
+    .tab{border:none;padding:.9rem .5rem;border-radius:1rem;background:rgba(255,255,255,.05);color:var(--muted);font-weight:800;font-size:12px}.tab.active{background:rgba(255,255,255,.13);color:var(--text);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+    .right{padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-4)} .event-log{display:grid;gap:var(--space-3);max-height:220px;overflow:auto;padding-right:2px}
+    .pulse{height:120px;border-radius:1.1rem;background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--border);padding:var(--space-4);position:relative;overflow:hidden} .pulse svg{position:absolute;inset:0;width:100%;height:100%}
+    .small{font-size:var(--text-sm);color:var(--muted);line-height:1.6}.score-chip{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem .7rem;border-radius:999px;font-size:var(--text-xs);font-weight:800;transition:all .3s ease}
+    .mini-game{display:grid;gap:.8rem}.slider-wrap{display:grid;gap:.5rem}.slider{width:100%;accent-color:#7ed8ff}.fan-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .65rem;border-radius:999px;background:rgba(255,255,255,.08);font-size:var(--text-xs);font-weight:800}
+    .chat-box{display:grid;gap:.8rem}.chat-input{display:flex;gap:.6rem}.chat-input input{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);padding:.8rem 1rem;border-radius:999px}.chat-send{border:none;background:rgba(255,255,255,.92);color:#06111f;padding:.8rem 1rem;border-radius:999px;font-weight:800}
+    .notif{padding:.85rem 1rem;border-radius:1rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06)} .player-card h4{margin-bottom:.3rem}.spark{position:fixed;border-radius:999px;pointer-events:none;opacity:.9;animation:burst .8s ease-out forwards;z-index:50}
+    .pulse-hit{animation:pulseHit .55s ease}.shake{animation:shake .4s ease}.celebrate{animation:celebrate 1s ease}.tap-pop{animation:tapPop .35s ease}.score-flash{animation:scoreFlash .8s ease}.progress-glow{box-shadow:0 0 22px rgba(76,201,240,.25)}
+    @keyframes floatIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}} @keyframes pulseHit{0%{transform:scale(1)}35%{transform:scale(1.04)}100%{transform:scale(1)}} @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(4px)}75%{transform:translateX(-3px)}}
+    @keyframes celebrate{0%{transform:scale(1)}20%{transform:scale(1.04)}40%{transform:scale(.99)}100%{transform:scale(1)}} @keyframes tapPop{0%{transform:scale(1)}45%{transform:scale(.93)}100%{transform:scale(1)}} @keyframes scoreFlash{0%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 22px rgba(255,255,255,.35)}100%{text-shadow:0 0 0 transparent}} @keyframes burst{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0}} @keyframes logoSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    @media (max-width: 1180px){.app{grid-template-columns:1fr}.panel,.right{order:2}.phone{order:1;min-height:860px}.module-grid{grid-template-columns:1fr}}
+    @media (max-width: 640px){body{padding:.6rem}.panel,.right{padding:1rem}.topbar{padding:1rem}.momentum{padding:0 1rem 1rem}.content{padding:1rem 1rem 5.3rem}.score{font-size:2.6rem}.team-name{font-size:.95rem}.stats-grid{grid-template-columns:1fr}.side-metrics{grid-template-columns:1fr 1fr}.app{gap:.8rem}}
+    @media (prefers-reduced-motion: reduce){.logo,.spark,.stat-card,.feed-item,.rank-item,.log-item,.mini-game,.pulse-hit,.shake,.celebrate,.tap-pop,.score-flash{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="panel">
+      <div>
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <div class="eyebrow">Agentic Matchday</div>
+            <h1>FanPulse</h1>
+            <p class="subtitle">Interactive second-screen system for live sport engagement.</p>
+          </div>
+        </div>
+      </div>
+      <div class="challenge">
+        <div class="eyebrow">What makes it different</div>
+        <p>Beyond passive watching, FanPulse turns the viewer into an active participant through a second-screen experience that reacts to live play, surfaces context-aware moments, and strengthens emotional connection to both the match and the fan community.</p>
+      </div>
+      <div class="side-metrics">
+        <div class="mini"><span class="eyebrow">Engagement</span><strong id="engagementRate">82%</strong><span class="small">Fans still active during quiet spells</span></div>
+        <div class="mini"><span class="eyebrow">Streakers</span><strong id="streakers">146</strong><span class="small">Users on prediction streak</span></div>
+      </div>
+      <button class="sim-btn" id="simulateBtn">Simulate next match event</button>
+      <button class="ghost-btn" id="resetBtn">Reset match</button>
+      <div class="challenge">
+        <div class="eyebrow">Simple strong version</div>
+        <p>Live match feed, prediction and poll system, second-screen stats with notifications, and a fan leaderboard with rewards.</p>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:.75rem">Event colors</div>
+        <div class="legend">
+          <div><span class="dot" style="background:var(--goal-a)"></span>Goal = instant reward prompt</div>
+          <div><span class="dot" style="background:var(--card-a)"></span>Card = reaction storm</div>
+          <div><span class="dot" style="background:var(--save-a)"></span>Save = clutch pulse</div>
+          <div><span class="dot" style="background:var(--sub-a)"></span>Substitution = formation poll</div>
+          <div><span class="dot" style="background:var(--ft-a)"></span>Full time = streak bonus</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="phone">
+      <section class="topbar">
+        <div class="scoreboard">
+          <div class="team"><div class="crest a">MC</div><div><div class="team-name" id="favTeamLabel">Manchester City</div><div class="small">Home</div></div></div>
+          <div style="text-align:center">
+            <div class="score" id="scoreText">1 - 1</div>
+            <div class="clock" id="clockText">68'</div>
+            <div class="live-clock"><span class="date" id="liveDate">Wed, 13 May 2026</span><span class="time" id="liveTime">7:13 PM IST</span></div>
+          </div>
+          <div class="team" style="justify-content:flex-end"><div><div class="team-name" style="text-align:right">Arsenal</div><div class="small" style="text-align:right">Away</div></div><div class="crest b">AR</div></div>
+        </div>
+        <div class="meta-row">
+          <div class="score-chip" id="energyChip" style="background:rgba(76,201,240,.14);color:var(--primary)">⚡ Fan energy surging</div>
+          <div class="small" id="activePrompt">Live micro-activity: Predict the next breakthrough.</div>
+        </div>
+      </section>
+
+      <section class="momentum">
+        <div class="small" style="margin-bottom:.55rem">Momentum blend = possession + shots + fan energy</div>
+        <div class="momentum-bar"><div class="momentum-a" id="momentumA" style="width:56%">City 56%</div><div class="momentum-b" id="momentumB" style="width:44%">Arsenal 44%</div></div>
+      </section>
+
+      <section class="content">
+        <div class="tab-panels active" data-panel="engage">
+          <article class="moment-card" id="momentCard">
+            <div class="moment-badge" id="momentBadge">Live engage card</div>
+            <div class="moment-title" id="momentTitle">The game is on a knife edge. Ask fans to predict the next decisive moment.</div>
+            <p class="moment-copy" id="momentCopy">A pressure spike on the left flank has the crowd leaning forward. The system turns tension into interaction before attention drops.</p>
+            <div class="ai-analyst">
+              <div class="eyebrow" style="margin-bottom:.45rem">AI analyst</div>
+              <p id="analystText">City are pinning Arsenal with sustained territory, but Arsenal's transition lanes remain open. The next event likely comes from a turnover or quick wide overload.</p>
+            </div>
+            <div class="action-zone" id="actionZone"></div>
+            <div class="module-grid" style="margin-top:1rem">
+              <div class="mini-game">
+                <div class="eyebrow">Fan control</div>
+                <div class="slider-wrap">
+                  <label for="hypeSlider" class="small">Boost crowd hype manually</label>
+                  <input id="hypeSlider" class="slider" type="range" min="40" max="100" value="82">
+                </div>
+                <div class="analyst-actions">
+                  <button class="tiny-btn" data-analyst-mode="calm">Calm analyst</button>
+                  <button class="tiny-btn active" data-analyst-mode="balanced">Balanced</button>
+                  <button class="tiny-btn" data-analyst-mode="hype">Hype mode</button>
+                </div>
+                <div class="fan-badge">🎮 Manual controls affect momentum, feed tone, and analyst style</div>
+              </div>
+              <div class="module">
+                <div class="eyebrow">Live quiz</div>
+                <p class="small" id="quizQuestion" style="margin-top:.4rem">Who has completed more final-third passes tonight?</p>
+                <div class="vote-grid" style="margin-top:.8rem">
+                  <button class="vote-btn quiz-option">De Bruyne</button>
+                  <button class="vote-btn quiz-option">Saka</button>
+                </div>
+                <div class="small" id="quizResult" style="margin-top:.7rem">Answer correctly for +20 bonus points.</div>
+              </div>
+            </div>
+          </article>
+
+          <div class="module-grid">
+            <div class="module">
+              <div class="eyebrow">Second-screen dashboard</div>
+              <p class="small" style="margin-top:.45rem">Live stats, timeline, notifications, and predictive prompts stay on the companion screen while the main broadcast stays clean.</p>
+              <div class="badge-list" style="margin-top:.9rem">
+                <div class="fan-badge">📊 Live stats panel</div>
+                <div class="fan-badge">🔔 Moment notifications</div>
+                <div class="fan-badge">🧠 Predict next play</div>
+                <div class="fan-badge">🏅 Participation rewards</div>
+              </div>
+            </div>
+            <div class="stat-card"><div class="stat-label">Watch time boost</div><div style="font-size:1.7rem;font-weight:900;margin-top:.4rem" id="watchBoost">+27%</div><div class="small">Interactive prompts reduce drop-off after dead balls.</div></div>
+          </div>
+        </div>
+
+        <div class="tab-panels" data-panel="stats">
+          <div class="stats-grid" id="statsGrid"></div>
+          <div class="module-grid" style="margin-top:1rem">
+            <div class="module">
+              <div class="eyebrow">Player cards</div>
+              <div class="player-list" style="margin-top:.8rem">
+                <button class="player-btn" data-player="Haaland">Haaland</button>
+                <button class="player-btn" data-player="De Bruyne">De Bruyne</button>
+                <button class="player-btn" data-player="Saka">Saka</button>
+              </div>
+              <div class="player-card" id="playerCard" style="margin-top:.8rem">
+                <h4>Erling Haaland</h4>
+                <p class="small">xG threat 0.62, 4 box touches, constantly pinning the centre-backs.</p>
+              </div>
+            </div>
+            <div class="module">
+              <div class="eyebrow">Favorite team personalization</div>
+              <p class="small" style="margin-top:.4rem">Tailor notifications and prompts to the team the fan cares about most.</p>
+              <div class="pref-row" style="margin-top:.8rem">
+                <button class="pref-btn active" data-team="Manchester City">Manchester City</button>
+                <button class="pref-btn" data-team="Arsenal">Arsenal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panels" data-panel="feed">
+          <div class="module-grid">
+            <div>
+              <div class="feed-list" id="feedList"></div>
+            </div>
+            <div class="chat-box">
+              <div class="eyebrow">Watch party chat</div>
+              <div class="pref-row" style="margin-top:.4rem">
+                <button class="pref-btn active chat-room" data-room="main">Main match room</button>
+                <button class="pref-btn chat-room" data-room="teamA">City fans</button>
+                <button class="pref-btn chat-room" data-room="teamB">Arsenal fans</button>
+                <button class="pref-btn chat-room" data-room="private">Private room</button>
+              </div>
+              <div class="notif" id="pinnedUpdate"><strong>Pinned update:</strong> Goal probability rising after sustained pressure on the left.</div>
+              <div class="reactions" style="margin-top:.2rem">
+                <button class="reaction quick-react">🔥 What a shot</button>
+                <button class="reaction quick-react">😮 Big chance</button>
+                <button class="reaction quick-react">⚽ Goal vibe</button>
+                <button class="reaction quick-react">🛑 Huge stop</button>
+              </div>
+              <div class="chat-list" id="chatList"></div>
+              <div class="chat-input"><input id="chatInput" type="text" placeholder="Drop a live fan comment"><button class="chat-send" id="chatSend">Send</button></div>
+              <div class="badge-list">
+                <div class="fan-badge">🛡 Filtered chat</div>
+                <div class="fan-badge">🚨 Report</div>
+                <div class="fan-badge">🐢 Slow mode</div>
+                <div class="fan-badge">🤖 AI moderation</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panels" data-panel="rankings">
+          <div class="rank-list" id="rankList"></div>
+          <div class="module-grid" style="margin-top:1rem">
+            <div class="module">
+              <div class="eyebrow">Badges earned</div>
+              <div class="badge-list" id="badgeList" style="margin-top:.8rem"></div>
+            </div>
+            <div class="module">
+              <div class="eyebrow">Post-match voting</div>
+              <p class="small" style="margin-top:.4rem">Let the crowd decide the player of the match after full time.</p>
+              <div class="vote-grid" style="margin-top:.8rem">
+                <button class="vote-btn post-vote">Haaland</button>
+                <button class="vote-btn post-vote">Saka</button>
+                <button class="vote-btn post-vote">De Bruyne</button>
+              </div>
+              <div class="small" id="postVoteResult" style="margin-top:.7rem">Voting activates all game long, but peaks after full time.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <nav class="tabbar" aria-label="Primary tabs">
+        <button class="tab active" data-tab="engage">Engage</button>
+        <button class="tab" data-tab="stats">Live Stats</button>
+        <button class="tab" data-tab="feed">Fan Feed</button>
+        <button class="tab" data-tab="rankings">Rankings</button>
+      </nav>
+    </main>
+
+    <aside class="right">
+      <div>
+        <div class="eyebrow">System response</div>
+        <h3 style="margin-top:.45rem;font-size:1.35rem">Why it feels alive</h3>
+        <p class="small" style="margin-top:.55rem">Every event changes the palette, prompt type, analyst commentary, and point economy so the screen never feels static across the 90 minutes.</p>
+      </div>
+      <div class="challenge">
+        <div class="eyebrow">Key differentiators</div>
+        <p>1. Beyond passive watching: fans act, vote, predict, and react instead of only consuming the broadcast.<br><br>2. Second-screen native: the experience is built for the mobile companion behavior fans already have during matches.<br><br>3. Real-time engagement: every key moment creates a fresh live interaction window.<br><br>4. Context-aware triggers: prompts appear when the match narrative makes them meaningful, not as random notifications.<br><br>5. Stronger emotional connection: users feel closer to both the game tension and the live fan community.</p>
+      </div>
+      <div class="pulse">
+        <div class="eyebrow">Fan energy waveform</div>
+        <svg viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true">
+          <defs><linearGradient id="wave" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4cc9f0"/><stop offset="50%" stop-color="#9d7bff"/><stop offset="100%" stop-color="#ff5d73"/></linearGradient></defs>
+          <path id="wavePath" d="M0,78 C18,70 28,42 44,50 C64,62 72,92 92,84 C110,77 120,30 140,35 C160,40 168,96 188,90 C210,83 218,48 238,56 C256,63 270,88 290,80 C304,75 310,64 320,68" fill="none" stroke="url(#wave)" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="challenge">
+        <div class="eyebrow">Moment-based triggers</div>
+        <p>Interactions open during goals, cards, saves, substitutions, and full time so prompts feel natural and tied to match context.</p>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:.8rem">Live notifications</div>
+        <div class="notif-list" id="notifList"></div>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:.8rem">Event timeline</div>
+        <div class="event-log" id="eventLog"></div>
+      </div>
+      <div class="challenge">
+        <div class="eyebrow">Point engine</div>
+        <p>Voting +10, reactions +5, correct predictions +50 to +80, quiz wins +20, streak bonus +25, and badge rewards for deeper participation.</p>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const state = {
+      analystMode: 'balanced', favoriteTeam:'Manchester City',
+      scoreA: 1, scoreB: 1, minute: 68, momentumA: 56, momentumB: 44,
+      possessionA: 58, possessionB: 42, shotsA: 11, shotsB: 8, passesA: 503, passesB: 371, cardsA: 1, cardsB: 2,
+      fanEnergy: 82, watchBoost: 27, communityPulse: 9.2, streakers: 146,
+      badges:['First Predictor','Momentum Reader'],
+      feed:[
+        {user:'@bluecore', text:'Called the equaliser window 3 minutes early and banked +50.', tag:'Prediction win'},
+        {user:'@northbank', text:'This tactical chess match is begging for a pace injection on the wing.', tag:'Hot take'},
+        {user:'@livewire', text:'Reaction storm hit 4.8k taps after that heavy challenge.', tag:'Fan moment'}
+      ],
+      activeRoom:'main', chats:{
+        main:[{user:'Riya', text:'That next sub changes the match.'},{user:'Kabir', text:'Need a faster outlet on the right now.'}],
+        teamA:[{user:'BlueCore', text:'City are building toward something here.'}],
+        teamB:[{user:'NorthBank', text:'Arsenal just need one clean transition.'}],
+        private:[{user:'Friends', text:'Watch-party room open. React together here.'}]
+      },
+      notifications:[
+        'Live poll ready: predict the next breakthrough.',
+        'Your streak is active — one more correct call for a badge.',
+        'Companion stats panel updated after the last big chance.'
+      ],
+      rankings:[{name:'Riya', pts:420, streak:5}, {name:'Aarav', pts:390, streak:4}, {name:'Mina', pts:355, streak:3}, {name:'Kabir', pts:330, streak:3}],
+      players:{
+        'Haaland':'xG threat 0.62, 4 box touches, constantly pinning the centre-backs.',
+        'De Bruyne':'Most progressive passes, repeatedly opening the right half-space.',
+        'Saka':'Carrying Arsenal forward with direct runs and wide overload pressure.'
+      },
+      log:[{m:"55'", e:'Big save', color:'var(--save-a)'},{m:"61'", e:'Arsenal yellow', color:'var(--card-a)'},{m:"68'", e:'Crowd surge', color:'var(--primary)'}],
+      events:[
+        {type:'penalty', minute:72, title:'Penalty to Manchester City. Predict the taker and result in 8 seconds.', copy:'Pressure peaks become a reward loop. Fans get a low-friction instant forecast instead of passively waiting for the kick.', badge:'Instant predict-and-earn', palette:'linear-gradient(135deg, rgba(25,211,126,.28), rgba(76,201,240,.16))', chipText:'🎯 High-stakes prediction open', chipBg:'rgba(25,211,126,.18)', chipColor:'#8dffc0', analyst:'The foul came from City overloading the half-space and forcing Arsenal to turn. The keeper now becomes the emotional pivot of the stadium.', action:'predict', notification:'Penalty alert: answer fast for max points.'},
+        {type:'card', minute:76, title:'Controversial tackle sparks a reaction storm.', copy:'Instead of a messy comment wall, the app launches guided reactions so fans can vent, side with the referee, or call it soft in one tap.', badge:'Reaction storm', palette:'linear-gradient(135deg, rgba(255,122,89,.28), rgba(255,93,115,.14))', chipText:'🔥 Split opinions across the fan base', chipBg:'rgba(255,122,89,.18)', chipColor:'#ffc3b4', analyst:'The booking stops Arsenal from pressing aggressively for the next phase. Expect a more cautious duelling pattern around midfield.', action:'react', notification:'Card controversy: join the reaction storm.'},
+        {type:'sub', minute:81, title:'Double substitution detected. Fans vote on the new shape instantly.', copy:'The formation poll converts tactical curiosity into participation, especially for viewers who stay engaged through patterns rather than drama.', badge:'Formation poll', palette:'linear-gradient(135deg, rgba(155,125,255,.25), rgba(76,201,240,.14))', chipText:'🧠 Tactical curiosity climbing', chipBg:'rgba(155,125,255,.18)', chipColor:'#d7c6ff', analyst:'Fresh legs suggest a switch to more direct channel runs. The poll frames the substitution as a tactical story, not just a roster change.', action:'vote', notification:'Substitution update: vote on the new shape.'},
+        {type:'goal', minute:88, title:'GOAL. The entire interface flips into celebration mode.', copy:'A goal triggers prediction settlements, bonus reactions, and a leaderboard surge so the emotional high becomes measurable competition.', badge:'Goal moment', palette:'linear-gradient(135deg, rgba(25,211,126,.3), rgba(242,193,78,.18))', chipText:'⚡ Goal spike rewrites the rankings', chipBg:'rgba(25,211,126,.18)', chipColor:'#8effb7', analyst:'The finish came from recycled pressure after Arsenal failed to clear the second ball. Sustained territory finally turned into scoreboard leverage.', action:'goal', notification:'Goal detected: rankings and rewards updated.'},
+        {type:'save', minute:90, title:'Last-minute save. Ask fans if that was match-defining.', copy:'Quiet sequences can be revived by framing defensive moments as heroic pivots, then opening a vote on whether the save preserved the result.', badge:'Clutch save', palette:'linear-gradient(135deg, rgba(87,183,255,.28), rgba(76,201,240,.14))', chipText:'🧤 Hero moment unlocked', chipBg:'rgba(87,183,255,.17)', chipColor:'#b7e5ff', analyst:'The keeper held position a fraction longer and won the angle battle. That kind of intervention spikes respect-based engagement rather than tribal outrage.', action:'save', notification:'Big save: vote if that kept the result alive.'},
+        {type:'fulltime', minute:90, title:'Full time. Reward streaks, crown the leaderboard, and recap the match narrative.', copy:'The end of the game is not the end of engagement. The system closes the loop with streak bonuses, bragging rights, and a tactical wrap-up.', badge:'Full time bonus', palette:'linear-gradient(135deg, rgba(242,193,78,.28), rgba(157,123,255,.16))', chipText:'🏁 Streak bonus awarded', chipBg:'rgba(242,193,78,.18)', chipColor:'#ffe8a3', analyst:'The final recap turns disconnected incidents into a coherent tactical story. That makes the product feel smarter than a generic second-screen companion.', action:'fulltime', notification:'Full time: vote for player of the match and claim streak rewards.'}
+      ],
+      eventIndex:-1
+    };
+
+    const $ = s => document.querySelector(s); const $$ = s => document.querySelectorAll(s);
+    function cleanAnalyst(text){ return text.split(' Calm lens:')[0].split(' Balanced lens:')[0].split(' Hype lens:')[0]; }
+    function updateAnalystTone(base){ const tone={ calm:' Calm lens: shape control matters more than emotion here.', balanced:' Balanced lens: emotion matters, but structure still decides the next phase.', hype:' Hype lens: the stadium mood is now directly influencing decision-making speed.'}; return cleanAnalyst(base)+tone[state.analystMode]; }
+    function animateText(el, next, flash=false){ if(el.textContent===String(next)) return; el.textContent=next; el.classList.remove('score-flash'); void el.offsetWidth; if(flash) el.classList.add('score-flash'); }
+    function createBurst(origin, color){ const rect=origin.getBoundingClientRect(); for(let i=0;i<12;i++){ const s=document.createElement('span'); s.className='spark'; s.style.width=s.style.height=(6+Math.random()*8)+'px'; s.style.left=(rect.left+rect.width/2)+'px'; s.style.top=(rect.top+rect.height/2)+'px'; s.style.background=color; s.style.setProperty('--tx',(Math.random()*160-80)+'px'); s.style.setProperty('--ty',(Math.random()*-120+20)+'px'); document.body.appendChild(s); setTimeout(()=>s.remove(),820);} }
+    function updateLiveClock(){ const now=new Date(); $('#liveDate').textContent=new Intl.DateTimeFormat('en-IN',{weekday:'short',day:'2-digit',month:'short',year:'numeric',timeZone:'Asia/Kolkata'}).format(now); $('#liveTime').textContent=new Intl.DateTimeFormat('en-IN',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}).format(now)+' IST'; }
+
+    function renderActionZone(type){
+      const zone=$('#actionZone');
+      const templates={
+        predict:`<div class="small">Pick fast: correct penalty outcomes earn +80 pts.</div><div class="chips"><button class="predict-btn primary">Goal +80</button><button class="predict-btn">Saved +50</button><button class="predict-btn">Miss +50</button></div>`,
+        react:`<div class="small">Controlled outrage, one-tap style.</div><div class="reactions"><button class="reaction">Never a yellow 😤 +5</button><button class="reaction">Correct call 👏 +5</button><button class="reaction">VAR check that 📺 +5</button></div>`,
+        vote:`<div class="small">Substitution poll unlocks +10 pts.</div><div class="vote-grid"><button class="vote-btn">4-2-3-1</button><button class="vote-btn">4-3-3 press</button><button class="vote-btn">Back three</button></div>`,
+        goal:`<div class="small">Celebrate or call the next twist.</div><div class="reactions"><button class="reaction">Limbs everywhere 🎉 +5</button><button class="reaction">Keeper had no chance ⚽ +5</button><button class="predict-btn primary">Predict next scorer +50</button></div>`,
+        save:`<div class="small">Was that the defining action?</div><div class="vote-grid"><button class="vote-btn">Match-saving stop +10</button><button class="vote-btn">Good but routine +10</button></div>`,
+        fulltime:`<div class="small">Close the loop with endgame rewards.</div><div class="chips"><button class="chip">Claim streak bonus +25</button><button class="chip">View match recap</button><button class="chip">Rematch predictor</button></div>`,
+        default:`<div class="small">Warm-up interaction for the next breaking moment.</div><div class="chips"><button class="chip">Next goal</button><button class="chip">Next card</button><button class="chip">Momentum swing</button></div>`
+      };
+      zone.innerHTML=templates[type]||templates.default;
+      zone.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
+        btn.classList.add('tap-pop');
+        const gain=btn.textContent.includes('+80')?80:btn.textContent.includes('+50')?50:btn.textContent.includes('+25')?25:btn.textContent.includes('+10')?10:5;
+        state.rankings[0].pts += gain;
+        state.feed.unshift({user:'@you', text:`Joined: ${btn.textContent.replace(/\s\+\d+/, '')}`, tag:'Your action'});
+        if(gain >= 50 && !state.badges.includes('Big Predictor')) state.badges.push('Big Predictor');
+        if(state.feed.length>6) state.feed.pop();
+        state.communityPulse=Math.min(10, +(state.communityPulse+0.1).toFixed(1));
+        renderRankings(); renderFeed(); renderHud(); renderBadges();
+        createBurst(btn, gain>=50 ? '#8effb7':'#7ed8ff');
+        setTimeout(()=>btn.classList.remove('tap-pop'),350);
+      }));
+    }
+
+    function renderStats(){
+      const rows=[['Possession',state.possessionA+'%',state.possessionB+'%',state.possessionA,state.possessionB],['Shots',state.shotsA,state.shotsB,state.shotsA,state.shotsB],['Passes',state.passesA,state.passesB,state.passesA,state.passesB],['Cards',state.cardsA,state.cardsB,state.cardsA,state.cardsB]];
+      $('#statsGrid').innerHTML=rows.map(([label,a,b,av,bv])=>{ const total=av+bv||1; const pa=Math.round(av/total*100); const pb=100-pa; return `<div class="stat-card"><div class="stat-label">${label}</div><div class="bar-wrap"><div class="bar-line"><div class="bar-a" style="width:${pa}%"></div><div class="bar-b" style="width:${pb}%"></div></div><div class="bar-values"><span>${a}</span><span>${b}</span></div></div></div>`; }).join('');
+    }
+    function renderFeed(){ $('#feedList').innerHTML=state.feed.map(item=>`<article class="feed-item"><div class="feed-head"><strong>${item.user}</strong><span class="tag">${item.tag}</span></div><p class="small" style="margin-top:.6rem;color:#dbe6ff">${item.text}</p></article>`).join(''); }
+    function renderChats(){ const room = state.chats[state.activeRoom] || []; $('#chatList').innerHTML=room.slice(-5).map(c=>`<div class="notif"><strong>${c.user}</strong><div class="small">${c.text}</div></div>`).join(''); }
+    function renderNotifications(){ $('#notifList').innerHTML=state.notifications.slice(0,4).map(n=>`<div class="notif">${n}</div>`).join(''); }
+    function renderBadges(){ $('#badgeList').innerHTML=state.badges.map(b=>`<div class="fan-badge">🏅 ${b}</div>`).join(''); }
+    function renderRankings(){ state.rankings.sort((a,b)=>b.pts-a.pts); $('#rankList').innerHTML=state.rankings.map((r,i)=>`<article class="rank-item ${i===0?'top':''}"><div class="rank-head"><div><strong>#${i+1} ${r.name}</strong><div class="small">${r.streak} match streak</div></div><div class="points">${r.pts} pts</div></div></article>`).join(''); }
+    function renderLog(){ $('#eventLog').innerHTML=state.log.slice().reverse().map(item=>`<div class="log-item"><div style="display:flex;align-items:center;gap:.65rem"><span class="dot" style="background:${item.color}"></span><strong>${item.e}</strong></div><span class="small">${item.m}</span></div>`).join(''); }
+    function renderHud(){ animateText($('#scoreText'), `${state.scoreA} - ${state.scoreB}`, true); animateText($('#clockText'), `${state.minute}'`); $('#momentumA').style.width=state.momentumA+'%'; $('#momentumA').textContent=`City ${state.momentumA}%`; $('#momentumB').style.width=state.momentumB+'%'; $('#momentumB').textContent=`Arsenal ${state.momentumB}%`; $('#engagementRate').textContent=`${Math.min(97, Math.round(state.fanEnergy))}%`; $('#streakers').textContent=state.streakers; $('#watchBoost').textContent=`+${state.watchBoost}%`; $('#favTeamLabel').textContent=state.favoriteTeam; }
+
+    function applyEvent(evt){
+      $('#momentCard').style.background=evt.palette; $('#momentBadge').textContent=evt.badge; $('#momentTitle').textContent=evt.title; $('#momentCopy').textContent=evt.copy; $('#analystText').textContent=updateAnalystTone(evt.analyst); $('#energyChip').textContent=evt.chipText; $('#energyChip').style.background=evt.chipBg; $('#energyChip').style.color=evt.chipColor; $('#activePrompt').textContent=`Live micro-activity: ${evt.badge}.`; renderActionZone(evt.action); state.notifications.unshift(evt.notification); state.notifications=state.notifications.slice(0,5); renderNotifications(); $('#momentCard').classList.remove('pulse-hit','shake','celebrate'); void $('#momentCard').offsetWidth; $('#momentCard').classList.add(evt.type==='goal' ? 'celebrate' : evt.type==='card' ? 'shake' : 'pulse-hit'); }
+
+    function simulate(){
+      state.eventIndex=(state.eventIndex+1)%state.events.length; const evt=state.events[state.eventIndex]; state.minute=evt.minute; state.fanEnergy=Math.min(98,state.fanEnergy+3); state.watchBoost=Math.min(44,state.watchBoost+2); state.streakers+=8;
+      if(evt.type==='penalty'){ state.possessionA+=2; state.shotsA+=1; state.momentumA=63; state.momentumB=37; }
+      if(evt.type==='card'){ state.cardsB+=1; state.momentumA=59; state.momentumB=41; }
+      if(evt.type==='sub'){ state.passesB+=22; state.shotsB+=1; state.momentumA=52; state.momentumB=48; }
+      if(evt.type==='goal'){ state.scoreA+=1; state.shotsA+=1; state.momentumA=68; state.momentumB=32; state.rankings[1].pts+=50; state.feed.unshift({user:'@skyblue', text:'The celebration cascade just pushed me into the top 10%.', tag:'Goal burst'}); if(!state.badges.includes('Goal Hunter')) state.badges.push('Goal Hunter'); }
+      if(evt.type==='save'){ state.shotsB+=1; state.momentumA=49; state.momentumB=51; state.feed.unshift({user:'@keeperunion', text:'That stop deserves its own highlight lane.', tag:'Clutch save'}); }
+      if(evt.type==='fulltime'){ state.minute=90; state.rankings.forEach((r,i)=>r.pts += i<3 ? 25 : 10); if(!state.badges.includes('Full-time Finisher')) state.badges.push('Full-time Finisher'); }
+      state.momentumB=100-state.momentumA; state.log.push({m:`${state.minute}'`, e:evt.badge, color:evt.type==='goal'?'var(--goal-a)':evt.type==='card'?'var(--card-a)':evt.type==='save'?'var(--save-a)':evt.type==='sub'?'var(--sub-a)':evt.type==='fulltime'?'var(--ft-a)':'var(--primary)'}); if(state.log.length>8) state.log.shift(); applyEvent(evt); renderStats(); renderFeed(); renderRankings(); renderLog(); renderHud(); renderBadges(); if(evt.type==='goal' || evt.type==='fulltime') createBurst($('#scoreText'), evt.type==='goal' ? '#8effb7' : '#ffe8a3'); }
+
+    function bindExtras(){
+      $('#hypeSlider').addEventListener('input', e=>{ state.fanEnergy=+e.target.value; state.momentumA=Math.max(42, Math.min(72, Math.round((state.possessionA + state.shotsA*2 + state.fanEnergy/3)/2))); state.momentumB=100-state.momentumA; state.feed[0]={user:'@crowdcontrol', text:`Fan-driven hype pushed live energy to ${state.fanEnergy}% and changed the tone of the room.`, tag:'Manual boost'}; renderFeed(); renderHud(); $('#momentumA').classList.add('progress-glow'); $('#momentumB').classList.add('progress-glow'); setTimeout(()=>{$('#momentumA').classList.remove('progress-glow');$('#momentumB').classList.remove('progress-glow');},350); });
+      $$('.tiny-btn').forEach(btn=>btn.addEventListener('click',()=>{ $$('.tiny-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); state.analystMode=btn.dataset.analystMode; $('#analystText').textContent=updateAnalystTone($('#analystText').textContent); }));
+      $$('.quiz-option').forEach(btn=>btn.addEventListener('click',()=>{ const correct = btn.textContent==='De Bruyne'; $('#quizResult').textContent = correct ? 'Correct — +20 points awarded instantly.' : 'Close, but the right answer was De Bruyne.'; if(correct){ state.rankings[0].pts += 20; if(!state.badges.includes('Quiz Winner')) state.badges.push('Quiz Winner'); renderRankings(); renderBadges(); } createBurst(btn, correct ? '#8effb7' : '#ffb39a'); }));
+      $$('.player-btn').forEach(btn=>btn.addEventListener('click',()=>{ $('#playerCard').innerHTML=`<h4>${btn.dataset.player}</h4><p class="small">${state.players[btn.dataset.player]}</p>`; btn.classList.add('tap-pop'); setTimeout(()=>btn.classList.remove('tap-pop'),350); }));
+      $$('.pref-btn').forEach(btn=>btn.addEventListener('click',()=>{ $$('.pref-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); state.favoriteTeam=btn.dataset.team; state.notifications.unshift(`Personalized alerts tuned for ${state.favoriteTeam}.`); renderNotifications(); renderHud(); }));
+      $('#chatSend').addEventListener('click',()=>{ const input=$('#chatInput'); const val=input.value.trim(); if(!val) return; const lowered = val.toLowerCase(); const blocked = ['abuse','spamspam','hate']; if(blocked.some(w => lowered.includes(w)) || /(.)\1{7,}/.test(lowered)){ $('#pinnedUpdate').innerHTML='<strong>Pinned update:</strong> Message blocked by moderation filter.'; input.value=''; return; } state.chats[state.activeRoom].push({user:'You', text:val}); input.value=''; renderChats(); state.rankings[0].pts += 5; renderRankings(); if(!state.badges.includes('Chat Contributor')) state.badges.push('Chat Contributor'); renderBadges(); });
+      $$('.chat-room').forEach(btn=>btn.addEventListener('click',()=>{ $$('.chat-room').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); state.activeRoom = btn.dataset.room; const map = {main:'Pinned update: Main match room synced to live play-by-play.', teamA:'Pinned update: Team A channel is in supporter-only mode.', teamB:'Pinned update: Team B channel is tracking counters and recovery moments.', private:'Pinned update: Private watch-party room for friends is active.'}; $('#pinnedUpdate').innerHTML = `<strong>${map[state.activeRoom]}</strong>`; renderChats(); }));
+      $$('.quick-react').forEach(btn=>btn.addEventListener('click',()=>{ state.chats[state.activeRoom].push({user:'You', text:btn.textContent}); renderChats(); state.rankings[0].pts += 3; renderRankings(); }));
+      $$('.post-vote').forEach(btn=>btn.addEventListener('click',()=>{ $('#postVoteResult').textContent=`${btn.textContent} received your player-of-the-match vote.`; state.rankings[0].pts += 10; if(!state.badges.includes('Post-match Voter')) state.badges.push('Post-match Voter'); renderRankings(); renderBadges(); createBurst(btn, '#ffe8a3'); }));
+    }
+
+    function resetMatch(){ location.reload(); }
+    $$('.tab').forEach(btn=>btn.addEventListener('click',()=>{ $$('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); const tab=btn.dataset.tab; $$('.tab-panels').forEach(p=>p.classList.toggle('active', p.dataset.panel===tab)); }));
+    $('#simulateBtn').addEventListener('click', e=>{ createBurst(e.currentTarget, '#7ed8ff'); simulate(); }); $('#resetBtn').addEventListener('click', resetMatch);
+    renderActionZone('default'); renderStats(); renderFeed(); renderChats(); renderNotifications(); renderBadges(); renderRankings(); renderLog(); renderHud(); bindExtras(); updateLiveClock(); setInterval(updateLiveClock, 1000);
+  </script>
+</body>
+</html>
